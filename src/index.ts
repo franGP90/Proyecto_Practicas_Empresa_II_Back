@@ -11,7 +11,7 @@ connectMongoDB();
 
 const app = express();
 app.use(cors({
-  origin: 'http://localhost:4200',
+  origin: ['http://localhost:4200'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
@@ -19,4 +19,6 @@ app.use(express.json());
 app.use("/auth", rutasAuth);
 app.use("/planner", rutasPlanner);
 
-app.listen(3000, () => console.log("El API ha comenzado"));
+//app.listen(3000, () => console.log("El API ha comenzado"));
+
+export default app;
