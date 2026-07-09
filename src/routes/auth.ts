@@ -58,7 +58,8 @@ router.post("/register", async (req, res) => {
 
         res.status(201).json({ message: "Usuario creado correctamente!", id: result.insertedId });
     } catch (err) {
-        res.status(500).json({ message: err });
+          const message = err instanceof Error ? err.message : String(err);
+            res.status(500).json({ message });
     }
 });
 
@@ -93,7 +94,8 @@ router.post("/login", async (req, res) => {
             },
         });
     } catch (err) {
-        res.status(500).json({ message: err });
+          const message = err instanceof Error ? err.message : String(err);
+  res.status(500).json({ message });
     }
 });
 
@@ -112,7 +114,8 @@ router.get("/me", verifyToken, async (req: AuthRequest, res) => {
 
         res.status(200).json(user);
     } catch (err) {
-        res.status(500).json({ message: err });
+        const message = err instanceof Error ? err.message : String(err);
+        res.status(500).json({ message });
     }
 });
 
@@ -133,7 +136,8 @@ router.put("/preferences", verifyToken, async (req: AuthRequest, res) => {
 
         res.status(200).json(result.preferences);
     } catch (err) {
-        res.status(500).json({ message: err });
+        const message = err instanceof Error ? err.message : String(err);
+        res.status(500).json({ message });
     }
 });
 
