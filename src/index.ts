@@ -18,6 +18,9 @@ app.use(cors({
 app.use(express.json());
 app.use("/auth", rutasAuth);
 app.use("/planner", rutasPlanner);
+app.get("/", (req, res) => {
+  res.send("Se ha conectado correctamente al API");
+});
 
 app.listen(3000, () => console.log("El API ha comenzado"));
 
