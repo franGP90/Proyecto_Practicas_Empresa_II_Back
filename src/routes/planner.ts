@@ -7,7 +7,7 @@ import { getParam } from "../utils/getParam";
 
 const router = Router();
 
-const coleccion = () => getDb().collection<WeeklyPlan>("WeeklyPlans");
+const coleccion = async() => (await getDb()).collection<WeeklyPlan>("WeeklyPlans");
 
 // Todas las rutas del planner requieren estar logueado
 router.use(verifyToken);
@@ -24,7 +24,7 @@ router.get("/:year/:weekNumber", async (req: AuthRequest, res) => {
             return res.status(400).json({ message: "year o weekNumber no válidos" });
         }
 
-        const plans = coleccion();
+        const plans = await coleccion();
         const userId = new ObjectId(payload.id);
 
         let plan = await plans.findOne({ userId, year, weekNumber });
@@ -54,7 +54,7 @@ router.post("/:year/:weekNumber/entries", async (req: AuthRequest, res) => {
             return res.status(400).json({ message: "day, mealType y recipe son obligatorios" });
         }
 
-        const plans = coleccion();
+        const plans = await coleccion();
         const userId = new ObjectId(payload.id);
 
         const newEntry: PlannerEntry = { _id: new ObjectId(), day, mealType, recipe };
@@ -86,7 +86,7 @@ router.delete("/:year/:weekNumber/entries/:entryId", async (req: AuthRequest, re
         const weekNumber = parseInt(getParam(req.params.weekNumber), 10);
         const entryId = getParam(req.params.entryId);
 
-        const plans = coleccion();
+        const plans = await coleccion();
         const userId = new ObjectId(payload.id);
 
         const result = await plans.findOneAndUpdate(

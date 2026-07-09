@@ -19,4 +19,9 @@ export const connectMongoDB = async (): Promise<void> => {
   }
 };
 
-export const getDb = ():Db => dB;
+export const getDb = async (): Promise<Db> => {
+  if (!dB) {
+    await connectMongoDB();
+  }
+  return dB!;
+};

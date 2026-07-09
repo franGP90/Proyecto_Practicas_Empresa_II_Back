@@ -13,7 +13,7 @@ dotenv.config();
 
 const SECRET = process.env.SECRET;
 
-const coleccion = () => getDb().collection<User>("Users");
+const coleccion = async() => (await getDb()).collection<User>("Users");
 
 router.get("/", async (req, res) => {
     res.send("Se ha conectado a la ruta de auth correctamente");
@@ -41,7 +41,7 @@ router.post("/register", async (req, res) => {
             return res.status(400).json({ message: "Email no válido" });
         }
 
-        const users = coleccion();
+        const users = await coleccion();
 
         const exists = await users.findOne({ $or: [{ email }, { username }] });
         if (exists) {
@@ -71,7 +71,7 @@ router.post("/login", async (req, res) => {
             return res.status(400).json({ message: "email y password son obligatorios" });
         }
 
-        const users = coleccion();
+        const users = await coleccion();
 
         const user = await users.findOne({ email });
         if (!user) return res.status(404).json({ message: "email incorrecto" });
@@ -103,7 +103,7 @@ router.post("/login", async (req, res) => {
 router.get("/me", verifyToken, async (req: AuthRequest, res) => {
     try {
         const payload = req.user as JwtPayload;
-        const users = coleccion();
+        const users = await coleccion();
 
         const user = await users.findOne(
             { _id: new ObjectId(payload.id) },
@@ -125,7 +125,7 @@ router.put("/preferences", verifyToken, async (req: AuthRequest, res) => {
         const payload = req.user as JwtPayload;
         const newPreferences = req.body as User["preferences"];
 
-        const users = coleccion();
+        const users = await coleccion();
         const result = await users.findOneAndUpdate(
             { _id: new ObjectId(payload.id) },
             { $set: { preferences: newPreferences } },
