@@ -99,7 +99,6 @@ router.post("/login", async (req, res) => {
     }
 });
 
-// Devuelve el perfil del usuario autenticado (sin la contraseña)
 router.get("/me", verifyToken, async (req: AuthRequest, res) => {
     try {
         const payload = req.user as JwtPayload;
@@ -119,7 +118,6 @@ router.get("/me", verifyToken, async (req: AuthRequest, res) => {
     }
 });
 
-// Actualiza solo las preferencias de dieta del usuario autenticado
 router.put("/preferences", verifyToken, async (req: AuthRequest, res) => {
     try {
         const payload = req.user as JwtPayload;
@@ -139,6 +137,38 @@ router.put("/preferences", verifyToken, async (req: AuthRequest, res) => {
         const message = err instanceof Error ? err.message : String(err);
         res.status(500).json({ message });
     }
+});
+
+router.put("/profile", verifyToken, async (req: AuthRequest, res) => {
+  try {
+    const payload = req.user as JwtPayload;
+    const { username } = req.body as { username: string };
+
+    if (!username || username.trim().length < 3)
+      return res.status(400).json({ message: "El username debe tener al menos 3 caracteres" });
+
+    const users = await coleccion();
+
+    // Comprobar que el username no lo tenga otro usuario
+    const exists = await users.findOne({
+      username,
+      _id: { $ne: new ObjectId(payload.id) }
+    });
+    if (exists)
+      return res.status(409).json({ message: "Ese nombre de usuario ya está en uso" });
+
+    const result = await users.findOneAndUpdate(
+      { _id: new ObjectId(payload.id) },
+      { $set: { username: username.trim() } },
+      { returnDocument: "after", projection: { password: 0 } }
+    );
+
+    if (!result) return res.status(404).json({ message: "Usuario no encontrado" });
+
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(500).json({ message: err instanceof Error ? err.message : String(err) });
+  }
 });
 
 export default router;
