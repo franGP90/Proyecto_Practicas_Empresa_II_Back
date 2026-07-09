@@ -22,6 +22,6 @@ app.get("/", (req, res) => {
   res.send("Se ha conectado correctamente al API");
 });
 
-app.listen(3000, () => console.log("El API ha comenzado"));
+//app.listen(3000, () => console.log("El API ha comenzado"));
 
 export default app;
