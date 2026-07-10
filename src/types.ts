@@ -9,9 +9,9 @@ export type User = {
 };
 
 export type DietPreferences = {
-    diet?: string;             // ej: "balanced", "low-carb", "high-protein"
-    health?: string[];         // ej: ["vegan", "gluten-free"]
-    cuisineType?: string[];    // ej: ["italian", "mediterranean"]
+    diet?: string;             
+    health?: string[];         
+    cuisineType?: string[];   
     excludedIngredients?: string[];
     calorieTarget?: number | null;
 };
@@ -46,6 +46,6 @@ export type WeeklyPlan = {
     _id?: ObjectId;
     userId: ObjectId;
     year: number;
-    weekNumber: number; // 1-53, según ISO week
+    weekNumber: number;
     entries: PlannerEntry[];
 };

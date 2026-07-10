@@ -149,7 +149,6 @@ router.put("/profile", verifyToken, async (req: AuthRequest, res) => {
 
     const users = await coleccion();
 
-    // Comprobar que el username no lo tenga otro usuario
     const exists = await users.findOne({
       username,
       _id: { $ne: new ObjectId(payload.id) }

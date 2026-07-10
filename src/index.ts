@@ -11,7 +11,7 @@ connectMongoDB();
 
 const app = express();
 app.use(cors({
-  origin: ['http://localhost:4200', 'https://proyecto-practicas-empresa-ii-back.vercel.app'],
+  origin: ['http://localhost:4200', 'https://proyecto-practicas-empresa-ii-back.vercel.app', 'https://proyecto-practicas-empresa-ii.vercel.app'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
@@ -22,6 +22,5 @@ app.get("/", (req, res) => {
   res.send("Se ha conectado correctamente al API");
 });
 
-//app.listen(3000, () => console.log("El API ha comenzado"));
 
 export default app;

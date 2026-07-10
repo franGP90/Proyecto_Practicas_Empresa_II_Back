@@ -9,11 +9,9 @@ const router = Router();
 
 const coleccion = async() => (await getDb()).collection<WeeklyPlan>("WeeklyPlans");
 
-// Todas las rutas del planner requieren estar logueado
 router.use(verifyToken);
 
-// GET /planner/:year/:weekNumber
-// Devuelve el plan de esa semana para el usuario logueado (lo crea vacío si no existe)
+
 router.get("/:year/:weekNumber", async (req: AuthRequest, res) => {
     try {
         const payload = req.user as JwtPayload;
@@ -41,8 +39,6 @@ router.get("/:year/:weekNumber", async (req: AuthRequest, res) => {
     }
 });
 
-// POST /planner/:year/:weekNumber/entries
-// Añade una receta a un día/comida concretos
 router.post("/:year/:weekNumber/entries", async (req: AuthRequest, res) => {
     try {
         const payload = req.user as JwtPayload;
@@ -66,7 +62,6 @@ router.post("/:year/:weekNumber/entries", async (req: AuthRequest, res) => {
         );
 
         if (!result) {
-            // no existía el plan todavía: lo creamos con esta primera entrada
             const newPlan: WeeklyPlan = { userId, year, weekNumber, entries: [newEntry] };
             const inserted = await plans.insertOne(newPlan);
             return res.status(201).json({ ...newPlan, _id: inserted.insertedId });
@@ -78,7 +73,6 @@ router.post("/:year/:weekNumber/entries", async (req: AuthRequest, res) => {
     }
 });
 
-// DELETE /planner/:year/:weekNumber/entries/:entryId
 router.delete("/:year/:weekNumber/entries/:entryId", async (req: AuthRequest, res) => {
     try {
         const payload = req.user as JwtPayload;
